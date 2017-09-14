@@ -41,13 +41,18 @@ pmx.initModule({
 }, function(err, config) {
 
   if (err) {
-    console.log("Error running module:", err);
+    console.log('Error running pm2-health-check:', err);
     return false;
   } else
-    console.log("Module running:", config.module_conf);
+    console.log('pm2-health-check is running:', config.module_conf);
 
-  let { port, endpoint } = config.module_conf;
-  startHealthCheckServer(port, endpoint);
+  pmx.action('start', reply => {
+    let { port, endpoint } = config.module_conf;
+    startHealthCheckServer(port, endpoint, () => {
+      console.log(`Health check server listening on port ${port} at ${endpoint}.`);
+      reply({ success: true });
+    });  
+  });
 
 });
 
